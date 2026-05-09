@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧺 LaundryFlow | Order Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="logo">
+                <i class="fas fa-washing-machine"></i>
+                <span>Laundry<span>Flow</span></span>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active" data-tab="dashboard">
+                        <i class="fas fa-chart-pie"></i>
+                        <span>Dashboard</span>
+                    </li>
+                    <li data-tab="orders">
+                        <i class="fas fa-list-check"></i>
+                        <span>All Orders</span>
+                    </li>
+                    <li data-tab="new-order">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>New Order</span>
+                    </li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="status-badge online">
+                    <span class="dot"></span>
+                    API Online
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header>
+                <div class="header-left">
+                    <h1 id="page-title">Dashboard Summary</h1>
+                    <p id="page-subtitle">Real-time business overview</p>
+                </div>
+                <div class="header-right">
+                    <div class="search-bar">
+                        <i class="fas fa-search"></i>
+                        <input type="text" id="global-search" placeholder="Search orders...">
+                    </div>
+                    <button class="btn-refresh" id="refresh-data">
+                        <i class="fas fa-sync-alt"></i>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Tab -->
+            <section id="tab-dashboard" class="tab-content active">
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon purple"><i class="fas fa-shopping-basket"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Orders</h3>
+                            <p id="stat-total-orders">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon green"><i class="fas fa-indian-rupee-sign"></i></div>
+                        <div class="stat-info">
+                            <h3>Total Revenue</h3>
+                            <p id="stat-total-revenue">₹0.00</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon blue"><i class="fas fa-clock"></i></div>
+                        <div class="stat-info">
+                            <h3>Processing</h3>
+                            <p id="stat-processing">0</p>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon orange"><i class="fas fa-truck-fast"></i></div>
+                        <div class="stat-info">
+                            <h3>Ready</h3>
+                            <p id="stat-ready">0</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-charts">
+                    <div class="chart-container">
+                        <div class="chart-header">
+                            <h3>Order Status Breakdown</h3>
+                        </div>
+                        <div class="status-bars" id="status-breakdown"></div>
+                    </div>
+                    <div class="recent-orders-mini">
+                        <div class="chart-header">
+                            <h3>Recent Activity</h3>
+                            <a href="#" data-tab="orders">View All</a>
+                        </div>
+                        <div class="activity-list" id="recent-activity"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Orders Tab -->
+            <section id="tab-orders" class="tab-content">
+                <div class="filter-bar">
+                    <div class="filter-group">
+                        <label>Status</label>
+                        <select id="filter-status">
+                            <option value="">All Statuses</option>
+                            <option value="RECEIVED">Received</option>
+                            <option value="PROCESSING">Processing</option>
+                            <option value="READY">Ready</option>
+                            <option value="DELIVERED">Delivered</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Customer Name</label>
+                        <input type="text" id="filter-name" placeholder="Filter by name...">
+                    </div>
+                    <div class="filter-group">
+                        <label>Phone Number</label>
+                        <input type="text" id="filter-phone" placeholder="Filter by phone...">
+                    </div>
+                </div>
+
+                <div class="orders-table-container">
+                    <table class="orders-table">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Contact</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="orders-list"></tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- New Order Tab -->
+            <section id="tab-new-order" class="tab-content">
+                <div class="form-container">
+                    <form id="create-order-form">
+                        <div class="form-section">
+                            <h3>Customer Information</h3>
+                            <div class="form-grid">
+                                <div class="form-group">
+                                    <label for="customer_name">Full Name</label>
+                                    <input type="text" id="customer_name" required placeholder="e.g. John Doe">
+                                </div>
+                                <div class="form-group">
+                                    <label for="phone_number">Phone Number</label>
+                                    <input type="tel" id="phone_number" required placeholder="e.g. 9876543210">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-section">
+                            <div class="section-header">
+                                <h3>Garment Items</h3>
+                                <button type="button" id="add-item-btn" class="btn-secondary">
+                                    <i class="fas fa-plus"></i> Add Item
+                                </button>
+                            </div>
+                            <div id="items-container" class="items-list">
+                                <div class="item-row">
+                                    <div class="form-group">
+                                        <label>Garment Type</label>
+                                        <input type="text" name="garment" required placeholder="e.g. Shirt">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Qty</label>
+                                        <input type="number" name="quantity" min="1" value="1" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Price/Unit</label>
+                                        <input type="number" name="price" step="0.1" min="0" required placeholder="0.00">
+                                    </div>
+                                    <button type="button" class="btn-remove-item">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-footer">
+                            <div class="total-preview">
+                                <span>Estimated Total:</span>
+                                <span id="form-total-amount">₹0.00</span>
+                            </div>
+                            <button type="submit" class="btn-primary">
+                                <i class="fas fa-check-circle"></i> Create Order
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notification Toasts -->
+    <div id="toast-container"></div>
+
+    <!-- Order Detail Modal -->
+    <div id="order-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
